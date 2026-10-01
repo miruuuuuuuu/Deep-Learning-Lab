@@ -1,55 +1,67 @@
-# Experiment 7 — Autoencoders
+# Experiment 6 — RNN LSTM GRU and Video Understanding
 
 ## CS3807 — Deep Learning Laboratory
 
 ### Objective
-Study Fully Connected Autoencoders Convolutional Autoencoders Denoising Autoencoders and Variational Autoencoders for image reconstruction denoising and generative modeling.
+Study Vanilla RNN LSTM and GRU for sequence learning and compare their performance on temporal data. The experiment also covers BPTT video understanding using CNN with recurrent models and sequence to sequence learning.
 
-### Dataset
-MNIST Handwritten Digit Dataset  
-Image size: `28 × 28 × 1`  
-Training: `10,000` images  
-Testing: `2,000` images  
-Pixel values normalized from `[0,255]` to `[0,1]`.
+### Datasets
+UCI Human Activity Recognition Using Smartphones Dataset  
+Input shape: `128 × 9`  
+Training: `7352` sequences  
+Testing: `2947` sequences  
+Classes: `6`
+
+UCF101 Video Dataset  
+Selected classes: `Basketball` `Biking` `CricketBowling` `TennisSwing` `WalkingWithDog`  
+Videos: `25` per class  
+Total videos: `125`  
+Frames per video: `10`  
+Frame size: `224 × 224 × 3`
 
 ### Models
-- Fully Connected Autoencoder
-- Convolutional Autoencoder
-- Denoising Convolutional Autoencoder
-- Variational Autoencoder
-
-### Evaluation
-- MSE
-- MAE
-- SSIM
-- Reconstruction error
-- Latent space visualization
-- Image generation
-- Latent interpolation
+- Vanilla RNN
+- LSTM
+- GRU
+- CNN LSTM for video understanding
+- CNN GRU for video understanding
+- Encoder Decoder LSTM for sequence to sequence learning
 
 ### Main Results
 
-| Model | MSE | MAE | SSIM | Parameters |
-|---|---:|---:|---:|---:|
-| FC-AE | 0.019823 | 0.053790 | 0.765471 | 211040 |
-| Conv-AE | 0.002706 | 0.015344 | 0.972631 | 74497 |
-| Denoising CAE | 0.004687 | 0.021415 | 0.943362 | 74497 |
+| Model | Accuracy | Macro Precision | Macro Recall | Macro F1 | Parameters | Training Time |
+|---|---:|---:|---:|---:|---:|---:|
+| Simple RNN | 82.08% | 82.52% | 82.17% | 82.10% | 1,974 | 73.65 s |
+| LSTM | 90.19% | 90.28% | 90.44% | 90.30% | 6,006 | 42.83 s |
+| GRU | 89.79% | 89.71% | 89.95% | 89.81% | 4,758 | 31.44 s |
 
-### Denoising Results
+### Sequence Length Results
 
-| Gaussian Noise | MSE | MAE | SSIM |
+| Sequence Length | RNN F1 | LSTM F1 | GRU F1 |
 |---:|---:|---:|---:|
-| σ = 0.1 | 0.003753 | 0.018029 | 0.958518 |
-| σ = 0.2 | 0.004687 | 0.021415 | 0.943362 |
-| σ = 0.3 | 0.007183 | 0.030019 | 0.862765 |
+| 32 | 84.21% | 88.43% | 89.20% |
+| 64 | 78.48% | 88.72% | 90.44% |
+| 128 | 74.86% | 89.07% | 90.68% |
 
-### VAE Results
+### Video Results
+
+MobileNetV2 feature dimension: `1280`  
+Recurrent input shape: `125 × 10 × 1280`  
+Train / Validation / Test: `87 / 19 / 19`
+
+| Model | Accuracy | Macro F1 | Parameters | Training Time |
+|---|---:|---:|---:|---:|
+| CNN LSTM | 94.74% | 94.29% | 168,229 | 4.76 s |
+| CNN GRU | 100.00% | 100.00% | 126,309 | 6.23 s |
+
+### Sequence to Sequence Results
+
+Input sequence length: `4`  
+Output sequence length: `3`  
+Training sequences: `4800`
 
 ```text
-Reconstruction Loss = 168.6003
-KL Loss = 4.8065
-Total Loss = 173.4068
-
-Test MSE = 0.043513
-Test MAE = 0.102146
-Test SSIM = 0.493061
+Token Accuracy = 100.00%
+Sequence Accuracy = 100.00%
+Training Loss = 0.0005
+Validation Loss = 0.0006
